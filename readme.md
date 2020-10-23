@@ -1,13 +1,13 @@
 # Evacuation Simulation
 
-![image-20201023225122176](C:\Users\lprzy\AppData\Roaming\Typora\typora-user-images\image-20201023225122176.png)
+![UI screenshot](assets\Screenshot_1.png)
 
 ## Contents
 
 - [Summary](#Summary)
 - [Features](#Features)
 - [Requirements](#Requirements)
-- [Starting the application](#Starting the application)
+- [Starting the application](#Starting-the-application)
 - [Attribution](#Attribution)
 
 
@@ -24,7 +24,7 @@ The back end (simulation environment and agent logic) was implemented using Pyth
 
 The application allows the user to select an environment in the form of a building plan with specified rooms, corridors, exits and signs pointing to the exits, as well as obstacles, place a number of agents of different types within the environment (by specifying population parameters as well as individually) and simulate the evacuation process. The application also supports explicit simulation of fire and smoke that have effect on the evacuating agents.
 
-![image-20201023225614025](C:\Users\lprzy\AppData\Roaming\Typora\typora-user-images\image-20201023225614025.png)
+![Simulation environment](assets\Screenshot_2.png)
 
 The simulation is agent-based, with the behaviour of each agent defined independently, based on their type, parameters, state, preferred strategy and what they can perceive in the environment. The agents can belong to different age groups (children, adults, elderly) and different levels of mobility (people with lower fitness and with reduced mobility). Different groups are characterised by different walking speeds and, in the case of children, entirely different behaviour logic.
 
