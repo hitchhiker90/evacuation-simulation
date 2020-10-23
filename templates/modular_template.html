@@ -1,0 +1,661 @@
+<!--
+COMP702 - Evacuation simulation
+Lukasz Przybyla
+HTML for the custom web-browser UI for the Python simulation.
+Based on the default Mesa's modular template.
+-->
+<!DOCTYPE html>
+<head>
+	<title>COMP702 - Evacuation Simulation</title>
+    <link href="/static/css/simulation-visuals.css" type="text/css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="panel" id="env-panel">
+            <div id="env-label">
+                <p><b>Simulation environment:</b></p>
+                <p id="env-label-name"></p>
+            </div>
+            <form id="env-choice">
+                <select name="env-dropdown" id="env-dropdown">
+                    <option value="None" disabled selected>Select a simulation environment</option>
+                    {% for env_name in local_includes %}
+                        <option value="{{ env_name }}">{{ env_name }}</option>
+                    {% end %}
+                </select>
+                <button type="submit" class="btn" id="env-load-btn" disabled>
+                    LOAD<br>ENVIRONMENT
+                </button>
+            </form>
+        </div>
+        <div class="panel" id="mode-select">
+            <button type="submit" class="btn mode-btn" id="single-mode-btn" disabled>
+                SINGLE RUN MODE
+            </button>
+            <button type="submit" class="btn mode-btn" id="batch-mode-btn">
+                BATCH RUN MODE
+            </button>
+        </div>
+        <div class="panel" id="sim-visuals">
+            <div class="batch-mode-el hidden" id="schedule">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="min-width: 10px"></th>
+                            <th>Runs</th>
+                            <th>Environment</th>
+                            <th>Time limit</th>
+                            <th>Fire</th>
+                            <th>Agents</th>
+                            <th>Adults</th>
+                            <th>Elderly</th>
+                            <th>Disabled</th>
+                            <th>Children</th>
+                            <th>Fitness</th>
+                            <th>Prevalent strategy</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <button class="batch-mode-el hidden" id="delete-schedule-entry-btn">
+            <p>🗑</p>
+        </button>
+        <div id="sim-control">
+            <div class="panel" id="sim-settings">
+                <button class="btn settings-btn active" id="sim-params-btn">SIMULATION PARAMETERS</button>
+                <div class="settings-tab" id="sim-params-tab" style="height: calc(100% - 3.3*2em);">
+                    <div class="settings-group">
+                        <p class="settings-group-label"><span>Stop conditions</span></p>
+                        <div class="setting-row">
+                            <div class="setting">
+                                <input type="checkbox" class="input" id="time-limit-checkbox" disabled/>
+                                <label for="time-limit-checkbox" class="label">Time limit</label>
+                            </div>
+                            <div class="setting">
+                                <input type="number" class="text-input" id="time-limit-input" min="1" max="100" disabled/>
+                                <label for="time-limit-input" class="label">minute(s)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <p class="settings-group-label"><span>Hazards</span></p>
+                        <div class="setting-row">
+                            <div class="setting">
+                                <input type="checkbox" class="checkbox" id="fire-checkbox" disabled/>
+                                <label class="label" for="fire-checkbox">Simulate fire</label>
+                            </div>
+                            <div class="setting">
+                                <button class="btn" id="add-fire-btn" disabled>
+                                    <label for="add-fire-btn">Add</label>
+                                </button>
+                                <button class="btn" id="remove-fire-btn" disabled>
+                                    <label for="remove-fire-btn">Remove</label>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting">
+                                <input type="radio" class="radio" name="fire" id="random-fire-radio" disabled/>
+                                <label for="random-fire-radio">Place randomly</label><br>
+                                <input type="radio" class="radio" name="fire" id="place-fire-radio" disabled/>
+                                <label for="place-fire-radio">Choose location</label>
+                            </div>
+                            <div class="setting">
+                                <select class="list" id="fire-list" multiple disabled></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn settings-btn" id="agents-batch-btn" disabled>GENERATE AGENTS (BATCH)</button>
+                <div class="settings-tab" id="agents-batch-tab">
+                    <div class="settings-group">
+                        <p class="settings-group-label"><span>Population</span></p>
+                        <div class="setting-row">
+                            <div class="setting">
+                                <input type="radio" class="radio" name="population" id="population-number-radio" />
+                                <label for="population-number-radio">Number</label><br>
+                                <input type="radio" class="radio" name="population" id="population-density-radio" />
+                                <label for="population-density-radio">Occupation density</label>
+                            </div>
+                            <div class="setting">
+                                <input type="number" class="text-input" id="population-number-input" min="1" max="100" step="1" disabled/>
+                                <label class="label" for="population-number-input">agents</label><br>
+                                <input type="number" class="text-input" id="population-density-input" min="0" max="1.7" step="0.01" disabled/>
+                                <label class="label" for="population-density-input">per./sqm</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <p class="settings-group-label"><span>Population groups</span></p>
+                        <div class="setting-row">
+                            <div class="setting">
+                                <input type="checkbox" class="checkbox" id="elderly-checkbox" />
+                                <label class="label" for="elderly-checkbox">Elderly</label><br>
+                                <input type="checkbox" class="checkbox" id="disabled-checkbox" />
+                                <label class="label" for="disabled-checkbox">Disabled</label><br>
+                                <input type="checkbox" class="checkbox" id="children-checkbox" />
+                                <label class="label" for="children-checkbox">Children</label>
+                            </div>
+                            <div class="setting">
+                                <input type="range" class="slider" id="elderly-slider" min="0" max="100" value="0" disabled/>
+                                <label for="add-fire-btn" id="elderly-slider-label">0%</label>
+                                <input type="range" class="slider" id="disabled-slider" min="0" max="100" value="0" disabled/>
+                                <label for="remove-fire-btn" id="disabled-slider-label">0%</label>
+                                <input type="range" class="slider" id="children-slider" min="0" max="100" value="0" disabled/>
+                                <label for="remove-fire-btn" id="children-slider-label">0%</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <p class="settings-group-label"><span>Fitness</span></p>
+                        <div class="setting-row">
+                            <label class="label" for="population-fitness-slider">Population fitness</label>
+                            <div class="setting">
+                                <input type="range" class="slider" id="population-fitness-slider" min="0" max="100" value="50" />
+                                <label for="population-fitness-slider" id="population-fitness-slider-label">50%</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-group">
+                        <p class="settings-group-label"><span>Preferred exit strategy</span></p>
+                        <div class="setting-row" id="preferred-exit-row">
+                            <label class="label" for="population-strategy-slider">Follow<br>the signs</label>
+                            <div class="setting">
+                                <label for="population-strategy-slider" id="population-strategy-slider-label-left">50%</label>
+                                <input type="range" class="slider" id="population-strategy-slider" min="0" max="100" value="50" />
+                                <label for="population-strategy-slider" id="population-strategy-slider-label-right">50%</label>
+                            </div>
+                            <label class="label" for="population-strategy-slider">Familar<br>exit</label>
+                        </div>
+                    </div>
+                    <div class="settings-exec-btn-panel">
+                        <button class="btn settings-exec-btn" id="agents-batch-exec-btn" disabled>
+                            GENERATE AGENTS
+                        </button>
+                        <p class="note">(This will remove<br>any previously placed agents)</p>
+                    </div>
+                </div>
+                <button class="btn settings-btn" id="agents-indiv-btn" disabled>ADD INDIVIDUAL AGENTS</button>
+                <div class="settings-tab" id="agents-indiv-tab">
+                    <div class="settings-group">
+                        <p class="settings-group-label"><span id="agent-details-label">Agent details</span></p>
+                        <div class="setting-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="agent-name-input">Name / ID</label>
+                            </div>
+                            <div class="setting">
+                                <input type="input" class="settings-text" id="agent-name-input" placeholder="agent#001"/>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="agent-type-dropdown">Type</label>
+                            </div>
+                            <div class="setting">
+                                <select class="settings-dropdown" id="agent-type-dropdown">
+                                    <option value="None" disabled selected>Select agent type</option>
+                                    <option value="Adult">Adult</option>
+                                    <option value="Elderly">Elderly</option>
+                                    <option value="Disabled">Disabled</option>
+                                    <option value="Child">Child</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="agent-fitness-dropdown">Fitness</label>
+                            </div>
+                            <div class="setting">
+                                <select class="settings-dropdown" id="agent-fitness-dropdown" disabled>
+                                    <option value="None" disabled selected>Select agent fitness</option>
+                                    <option value="Fit">Fit</option>
+                                    <option value="Unfit">Unfit</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="agent-strategy-dropdown">Preferred exit strategy</label>
+                            </div>
+                            <div class="setting">
+                                <select class="settings-dropdown" id="agent-strategy-dropdown">
+                                    <option value="None" disabled selected>Select exit strategy</option>
+                                    <option value="familiarExit">Go to a familiar exit</option>
+                                    <option value="followSigns">Follow exit signs</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-group" id="exits-group">
+                        <p class="settings-group-label"><span>Familiar exits</span></p>
+                        <div class="setting-row">
+                            <div class="setting">
+                                <select class="settings-dropdown" id="known-exits-dropdown">
+                                    <option value="None" disabled selected>Select an exit</option>
+                                </select>
+                            </div>
+                            <div class="setting">
+                                <button class="btn" id="known-exits-add-btn" disabled>
+                                    <label for="known-exits-add-btn">Add</label>
+                                </button>
+                                <button class="btn" id="known-exits-remove-btn" disabled>
+                                    <label for="known-exits-remove-btn">Remove</label>
+                                </button><br>
+                                <select class="list" id="exits-list" multiple disabled></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-exec-btn-panel">
+                        <button class="btn settings-exec-btn" id="place-agent-btn" disabled>
+                            PLACE AGENT
+                        </button>
+                        <button class="btn settings-exec-btn" id="update-agent-btn" disabled>
+                            UPDATE AGENT
+                        </button>
+                        <button class="btn settings-exec-btn" id="delete-agent-btn" disabled>
+                            DELETE AGENT
+                        </button>
+                    </div>
+                    <div class="settings-group hidden" id="guardians-group">
+                        <p class="settings-group-label"><span>Guardians</span></p>
+                        <div class="setting-row">
+                            <div class="setting">
+                            </div>
+                            <div class="setting">
+                                <button class="btn" id="guardian-add-btn">
+                                    <label for="known-exits-add-btn">Add</label>
+                                </button>
+                                <button class="btn" id="guardian-remove-btn" disabled>
+                                    <label for="known-exits-remove-btn">Remove</label>
+                                </button><br>
+                                <select class="list" id="guardian-list" multiple disabled></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn settings-btn" id="results-btn" disabled>RESULTS</button>
+                <div class="settings-tab" id="results-tab">
+                    <div class="results-group">
+                        <p class="results-group-label"><span>Initial parameters</span></p><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-env-name">Simulation environment:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-env-name"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-area">Floor area:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-area"></p>
+                            </div>
+                        </div><br><div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-time-limit">Time limit:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-time-limit"></p>
+                            </div>
+                        </div><div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-fire">Fire simulated:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-fire"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-agents-number">Number of agents:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-agents-number"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-density">Occupation density:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-density"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-adults">Adults:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-adults"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-elderly">Elderly:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-elderly"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-disabled">Disabled:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-disabled"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-children">Children:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-children"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-fitness">Population fitness:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-fitness"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-strategy">Prevalent strategy:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="result" id="init-strategy"></p>
+                            </div>
+                        </div><br>
+                    </div>
+                    <div class="results-group" id="results">
+                        <p class="results-group-label" id="results-label"><span>Simulation results</span></p>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-run-time">Run time:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-run-time"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-cause">Cause:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-cause"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-agents-evac">Agents evacuated:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-agents-evac"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-adults-evac">Adults:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-adults-evac"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-elderly-evac">Elderly:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-elderly-evac"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-disabled-evac">Disabled:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-disabled-evac"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-children-evac">Children:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-children-evac"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-agents-unconsc">Agents unconscious:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-agents-unconsc"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-adults-unconsc">Adults:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-adults-unconsc"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-elderly-unconsc">Elderly:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-elderly-unconsc"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-disabled-unconsc">Disabled:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-disabled-unconsc"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-children-unconsc">Children:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-children-unconsc"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-agents-dead">Agents dead:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-agents-dead"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-adults-dead">Adults:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-adults-dead"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-elderly-dead">Elderly:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-elderly-dead"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-disabled-dead">Disabled:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-disabled-dead"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-children-dead">Children:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-children-dead"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-agents-active">Active agents left:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-agents-active"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-adults-active">Adults:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-adults-active"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-elderly-active">Elderly:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-elderly-active"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-disabled-active">Disabled:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-disabled-active"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-children-active">Children:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-children-active"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-min-time">Min. ideal evacuation time:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="init-min-time"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-avg-time">Avg. ideal evacuation time:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="init-avg-time"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="init-max-time">Max. ideal evacuation time:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="init-max-time"></p>
+                            </div>
+                        </div><br>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-min-time">Min. evacuation time:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-min-time"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-avg-time">Avg. evacuation time:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-avg-time"></p>
+                            </div>
+                        </div>
+                        <div class="result-row">
+                            <div class="setting-row-label">
+                                <label class="label" for="result-max-time">Max. evacuation time:</label>
+                            </div>
+                            <div class="setting">
+                                <p class="final-result" id="result-max-time"></p>
+                            </div>
+                        </div><br>
+                    </div>
+                </div>
+            </div>
+            <div id="ctrl-btn-panel">
+                <button class="btn execute-btn single-mode-el" id="sim-run-btn" disabled>
+                    RUN SIMULATION
+                </button>
+                <button class="btn execute-btn stop-btn hidden" id="sim-stop-btn">
+                    STOP SIMULATION
+                </button>
+                <button class="btn execute-btn batch-mode-el hidden" id="schedule-add-btn" disabled>
+                    ADD<br>TO SCHEDULE
+                </button>
+                <div class="execute-div batch-mode-el hidden" id="schedule-times">✕</div>
+                <input type="number" class="text-input batch-mode-el hidden" id="schedule-count" value="1" min="1" max="10" step="1" />
+                <button class="btn execute-btn batch-mode-el hidden" id="schedule-exec-btn" disabled>
+                    EXECUTE<br>SCHEDULE
+                </button>
+                <button class="btn execute-btn stop-btn hidden" id="batch-stop-btn">
+                    STOP BATCH
+                </button>
+                <div class="execute-div hidden inactive" id="sim-timer" disabled>
+                    <p>00:00:00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom-load all JavaScript dependencies -->
+    <script src="/static/js/jquery.js"></script>
+
+    <!-- Script includes go here (specified by the CanvasGrid python class) -->
+	{% for file_name in package_includes %}
+		<script src="/static/js/{{ file_name }}" type="text/javascript"></script>
+	{% end %}
+
+    <!-- template-specific code snippets here -->
+    <script>
+        var port = {{ port }};
+    </script>
+    <script src="/static/js/runcontrol.js"></script>
+
+    <!-- Element-specific scripts go here -->
+    <script>
+	    {% for script in scripts %}
+			{% raw script %}
+	    {% end %}
+    </script>
+    <script src="/static/js/CanvasInteraction.js"></script>
+
+    <!-- A script warning the user that refreshing the page will result in program reset
+    <script>
+        window.onbeforeunload = function(e) {
+            return ''
+        }
+    </script> -->
+</body>

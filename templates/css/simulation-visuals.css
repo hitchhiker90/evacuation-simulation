@@ -1,0 +1,608 @@
+body {
+    background-color: #d3ebed;
+    height: 97vh;
+    min-width: 1200px;
+    min-height: 600px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Grid outline */
+.container {
+    position: relative;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 75% 25%;
+    grid-template-rows: 9% 91%;
+    grid-template-areas:
+    "env-select mode-select"
+    "sim-visuals sim-control";
+}
+
+.panel {
+    background-color: white;
+    border: 1px solid lightgrey;
+    /* border-radius: 10px; */
+    box-shadow: 5px 5px 5px 0px rgba(35,98,103,0.75);
+}
+
+p {
+    margin: 0px 10px;
+}
+
+p, span {
+    user-select: none;
+}
+
+input:disabled {
+    user-select: none;
+    color: #999;
+}
+
+/* Buttons */
+.btn {
+    min-width: 60px;
+    color: #073135;
+    background-color: #B2DADE;
+    border: 1px solid;
+    user-select: none;
+}
+
+.btn:hover,
+.btn.active {
+    color: white;
+    background-color: #236267;
+}
+
+.btn:disabled,
+.btn:disabled:hover {
+    background-color: #B2DADE;
+    color: #999;
+}
+
+.active-btn {
+    background-color: red!important;
+}
+
+/* Note */
+.note {
+    font-size: 0.7em;
+    font-style: italic;
+    color: #999;
+}
+
+/* Environment select panel */
+#env-panel {
+    margin: 5px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5px;
+}
+
+#env-choice {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Environment select dropdown */
+#env-dropdown {
+    user-select: none;
+    width: 300px;
+    height: 2em;
+    margin: auto 10px;
+}
+
+/* Load environment button */
+#env-load-btn {
+    height: 3em;
+    margin: auto 10px;
+}
+
+/* Simulation visuals */
+#sim-visuals {
+    position: relative;
+    margin: 5px;
+    padding: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: center;
+    overflow: auto;
+    cursor: auto;
+}
+
+#sim-visuals::-webkit-scrollbar,
+#results-tab::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+#sim-visuals::-webkit-scrollbar-track,
+#results-tab::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+#sim-visuals::-webkit-scrollbar-thumb,
+#results-tab::-webkit-scrollbar-thumb {
+    background: #000;
+}
+
+#sim-visuals::-webkit-scrollbar-thumb:hover,
+#results-tab::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+#results-tab::-webkit-scrollbar {
+    display: initial;
+}
+
+.world-grid-parent {
+    position:relative;
+    margin: auto;
+}
+
+.world-grid {
+    z-index: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#loading-bckgrnd {
+    position: absolute;
+    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.5);
+    width: 100%;
+    height: 100%;
+}
+
+#loading-info {
+    position:absolute;
+    z-index: 2;
+    border: 2px solid #073135;
+    background-color: #B2DADE;
+    display: flex;
+    flex-direction: column;
+    align-content: space-around;
+    width: 300px;
+    height: 150px;
+    margin-top: calc(45vh - 110px);
+    align-items: center;
+}
+
+.loader {
+    border: 8px solid white;
+    border-top: 8px solid #236267;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    margin: auto;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#loading-info p {
+    margin: auto;
+}
+
+/* Batch mode schedule */
+
+#schedule {
+    position: static;
+    width: 100%;
+    margin: 0px;
+    text-align: center;
+    font-size: 0.7em;
+    border: 1px solid black;
+    user-select: none;
+}
+
+#schedule table {
+    width: 100%;
+    border-collapse: collapse;
+    border-style: hidden;
+}
+
+#schedule thead {
+    background-color: #236267;
+    color: white;
+}
+
+#schedule tbody tr:nth-child(odd) {
+    background-color: #d7f2f5;
+}
+
+#schedule tbody tr:nth-child(even) {
+    background-color: white;
+}
+
+#schedule th {
+    height: 2em;
+    border-left: 1px solid white;
+    border-right: 1px solid white;;
+    border-bottom: 1px solid white;
+}
+
+#schedule td {
+    height: 3em;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+#schedule td div {
+    max-width: 30px;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+}
+
+#schedule td div p {
+    margin: 0px 5px;
+}
+
+#schedule tbody tr:nth-child(odd) td {
+    border-left: 1px solid white;
+    border-right: 1px solid white;
+}
+
+#schedule tbody tr:nth-child(even) td {
+    border-left: 1px solid #B2DADE;
+    border-right: 1px solid #B2DADE;
+}
+
+#schedule th:first-child,
+#schedule td:first-child {
+    border-left: none!important;
+}
+
+#schedule th:last-child,
+#schedule td:last-child {
+    border-right: none!important;
+}
+
+#schedule tbody tr {
+    height: 3em;
+}
+
+.selected-row {
+    background-color: #236267!important;
+    color: white;
+    font-weight: bold;
+}
+
+#delete-schedule-entry-btn {
+    transition-duration: 0.5s;
+    user-select: none;
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    top: 90%;
+    left: 70%;
+    background-color: white;
+    color: #B2DADE;
+    line-height: 1.2em;
+    font-size: 2.5em;
+    border: 2px solid black;
+    border-radius: 26px;
+    text-align: center;
+    padding-left: 9px;
+}
+
+#delete-schedule-entry-btn:hover {
+    transition-duration: 1s;
+    color: black;
+}
+
+#delete-schedule-entry-btn:enabled:active {
+    transition-duration: 0s;
+    background-color: black;
+    color: white;
+}
+
+#delete-schedule-entry-btn:disabled {
+    color: lightgrey;
+    border-color: lightgrey;
+}
+
+#delete-schedule-entry-btn:focus {
+    outline: none;
+}
+
+#delete-schedule-entry-btn p {
+    margin: auto;
+}
+
+/* Mode select menu */
+#mode-select {
+    margin: 5px;
+    background-color: #B2DADE;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.mode-btn {
+    height: 100%;
+    width: 50%;
+    margin: 0;
+}
+
+/* Simulation settings menu */
+#sim-settings {
+    background-color: #B2DADE;
+    margin: 5px;
+    height: 87%;
+    border: none;
+}
+
+.settings-btn {
+    width: 100%;
+    height: 2em;
+    margin: 0 auto;
+    border-top: 1px solid;
+}
+
+.settings-tab {
+    transition: height 0.2s ease-out;
+    display: block;
+    height: 0;
+    padding: 0 8px;
+    background-color: white;
+    overflow: auto;
+}
+
+.settings-tab::-webkit-scrollbar {
+    display: none;
+}
+
+.settings-group,
+.results-group {
+    border-radius: 2px;
+    border: 2px solid black;
+    padding: 5px;
+    margin: 10px;
+    font-size: 0.8em;
+}
+
+.settings-group-label,
+.results-group-label {
+    display: block;
+    positon: absolute;
+    margin-top: -1.1em;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.settings-group-label span,
+.results-group-label span {
+    background-color: white;
+    padding: 0px 5px;
+}
+
+/* A row within a setting group */
+.setting-row {
+    min-height: 50px;
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.setting {
+    width: 50%;
+    align-items: center;
+}
+
+.setting-row-label {
+    width: 50%;
+    text-align: right;
+    margin: 5px;
+}
+
+.settings-text {
+    display: block;
+    width: 77%;
+    margin: auto;
+}
+
+.settings-dropdown {
+    display: block;
+    width: 80%;
+    margin: auto;
+}
+
+.setting .btn {
+    min-height: 30px;
+    height: 100%;
+    width: 46%;
+    margin: 2px;
+    vertical-align: middle;
+}
+
+input,
+radio,
+checkbox {
+    min-height: 17px;
+    margin: 3px;
+}
+
+.text-input {
+    margin: 1px;
+    width: 80px;
+}
+
+.setting label,
+.result label {
+    display: inline-block;
+    margin: 3px;
+    vertical-align: top;
+}
+
+.list {
+    width: calc(2*47% + 4px);
+    margin: 5px 2px 5px 2px;
+}
+
+.slider {
+    overflow: hidden;
+    background-color: #9a905d;
+    width: 70%;
+}
+
+#preferred-exit-row {
+    text-align: center;
+}
+
+#preferred-exit-row label {
+    width: 15%;
+    margin: auto;
+}
+
+#preferred-exit-row div {
+    width: 60%;
+    margin: auto;
+}
+
+#preferred-exit-row input {
+    width: 60%;
+}
+
+.settings-exec-btn-panel {
+    text-align: center;
+}
+
+.settings-exec-btn {
+    height: 30px;
+    margin: auto;
+    background-color: #236267;
+    color: #B2DADE;
+    border-radius: 5px;
+    margin: auto;
+}
+
+.settings-exec-btn:hover {
+    background-color: #236267;
+    color: white;
+}
+
+.settings-exec-btn:disabled,
+.settings-exec-btn:disabled:hover {
+    background-color: #236267;
+    color: #bba;
+}
+
+.result-row {
+    height: 1.2em;
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.result {
+    font-weight: bold;
+    margin: 5px 5px 5px 10px;
+}
+
+/* Buttons etc. below the settings menu */
+#ctrl-btn-panel {
+    height: 11%;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+}
+
+.execute-btn {
+    height: 65%;
+    background-color: #236267;
+    color: #B2DADE;
+    border-radius: 5px;
+    margin: auto;
+}
+
+.execute-btn:hover {
+    background-color: #236267;
+    color: white;
+}
+
+.execute-btn:disabled,
+.execute-btn:disabled:hover {
+    background-color: #236267;
+    color: #bba;
+}
+
+.execute-div {
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+.stop-btn {
+    height: 65%;
+    width: 45%;
+    background-color: #236267;
+    color: white;
+    border-radius: 5px;
+    margin: auto;
+}
+
+.stop-btn:hover {
+    background-color: #e33434;
+    color: white;
+}
+
+.stop-btn:disabled,
+.stop-btn:disabled:hover {
+    background-color: #236267;
+    color: #bba;
+}
+
+#sim-run-btn {
+    width: 90%;
+}
+
+#sim-timer {
+    height: 70%;
+    width: 45%;
+    margin: auto;
+    font-size: 1.3em;
+    text-align: center;
+    justify-content: center;
+}
+
+#schedule-add-btn {
+    width: 30%;
+    margin-right: 0px;
+}
+
+#schedule-count {
+    height: 30%;
+    width: 10%;
+    margin: auto;
+    margin-right: 25px;
+    margin-left: 0px;
+}
+
+#schedule-exec-btn {
+    width: 40%;
+}
+
+
+/* A class for hiding elements*/
+.hidden {
+    display: none!important;
+}
+
+/* A class for inactive elements*/
+.inactive {
+    color: #999;
+}
