@@ -48,4 +48,4 @@ deploy:
         name: production
         url: http://161.35.167.110
     only:
-        - master
+        - main
