@@ -16,7 +16,7 @@ build-job:
 test-job1:
     stage: test
     script:
-        - echo "This job will test something"
+        - echo "This job will test something eventually"
 
 release:
     image: docker:latest
