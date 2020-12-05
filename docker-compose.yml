@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+    
+    evac-sim:
+        image: evac-sim
+        build: ./evac-sim
+        networks:
+            - evac-sim_net
+
+networks:
+    evac-sim_net:
