@@ -18,11 +18,6 @@ test-job1:
     script:
         - echo "This job tests something"
 
-test-job2:
-    stage: test
-    script:
-        - echo "This job tests something too!"
-
 release:
     image: docker:latest
     stage: release
