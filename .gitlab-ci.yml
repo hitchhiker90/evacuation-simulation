@@ -38,7 +38,6 @@ deploy:
     script:
         - chmod og= $ID_RSA
         - apt update && apt install openssh-client -y
-        - scp -i $ID_RSA -o StrictHostKeyChecking=no docker-compose.yml $SERVER_USER@$SERVER_IP:/srv/evac-sim
         - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
         - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd /srv &&
                                                                               docker pull $TAG_LATEST_EVAC_SIM &&
