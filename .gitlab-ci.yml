@@ -42,6 +42,7 @@ deploy:
         - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
         - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd /srv/evac-sim &&
                                                                               docker pull $TAG_LATEST_EVAC_SIM &&
+                                                                              docker-compose down &&
                                                                               docker-compose up --no-build -d"
 
     environment:
