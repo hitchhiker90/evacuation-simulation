@@ -13,4 +13,4 @@ RUN cd srv
 RUN mkdir logs
 
 # Start the application
-CMD python3 /srv/server.py
+CMD cd /srv && python3 /server.py
