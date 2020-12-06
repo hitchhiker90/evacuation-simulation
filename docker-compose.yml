@@ -9,4 +9,4 @@ services:
 
 networks:
     evac-sim_net:
-        external: true
+        name: evac-sim_net
