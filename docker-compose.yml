@@ -3,7 +3,7 @@ version: "3.8"
 services:
     
     evac-sim:
-        image: registry.gitlab.com/hitchhiker90/evacuation-simulation/main/evac-sim
+        image: registry.gitlab.com/hitchhiker90/evacuation-simulation/main/evac-sim:latest
         networks:
             - evac-sim_net
 
