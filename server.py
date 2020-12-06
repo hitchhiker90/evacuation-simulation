@@ -352,31 +352,31 @@ class MySocketHandler(SocketHandler):
 class MyModularServer(ModularServer):
 
     # Replace the default page and socket handlers with the extended classes
-    page_handler = (r"/", MyPageHandler)
-    socket_handler = (r"/ws", MySocketHandler)
+    page_handler = (r"/evac-sim/", MyPageHandler)
+    socket_handler = (r"/evac-sim/ws", MySocketHandler)
 
     # Adjust static handler settings to plug a custom template
     static_handler = (
-        r"/static/(.*)",
+        r"/evac-sim/static/(.*)",
         tornado.web.StaticFileHandler,
         {"path": CURRENT_DIR + "/templates"},
     )
 
     # These two are to get rid of errors related to favicon.ico and robots.txt
     favicon_handler = (
-        r"/(favicon\.ico)",
+        r"/evac-sim/(favicon\.ico)",
         tornado.web.StaticFileHandler,
         {"path": CURRENT_DIR + "/templates"},
     )
 
     robots_handler = (
-        r"/(robots\.txt)",
+        r"/evac-sim/(robots\.txt)",
         tornado.web.StaticFileHandler,
         {"path": CURRENT_DIR + "/templates"},
     )
 
     # Re-define the local handler and the handler list to replace the default values
-    local_handler = (r"/local/(.*)", tornado.web.StaticFileHandler, {"path": CURRENT_DIR})
+    local_handler = (r"/evac-sim/local/(.*)", tornado.web.StaticFileHandler, {"path": CURRENT_DIR})
     handlers = [page_handler, socket_handler, static_handler,
                 local_handler, favicon_handler, robots_handler]
 
