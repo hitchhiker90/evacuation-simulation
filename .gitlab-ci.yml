@@ -39,7 +39,7 @@ deploy:
         - chmod og= $ID_RSA
         - apt update && apt install openssh-client -y
         - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
-        - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd /srv &&
+        - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "cd /srv/portfolio &&
                                                                               docker pull $TAG_LATEST_EVAC_SIM &&
                                                                               docker-compose down &&
                                                                               docker-compose up --no-build -d"
