@@ -37,7 +37,7 @@ OPPOSITE_DIR = {"north": "south",
 envList = {}
 
 # Load the json files containing the environment
-for filename in os.listdir("assets/"):
+for filename in os.listdir(os.getcwd() + "/assets/"):
     if filename.endswith(".json"):
         # Set up empty list for environment components
         exitList = []
