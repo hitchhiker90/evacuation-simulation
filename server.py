@@ -49,9 +49,10 @@ class MySocketHandler(SocketHandler):
         w = self.application.model.grid.width
         h = self.application.model.grid.height
         # Check if precomputed visibility file exists and check the date of the file against the environment file
+        # Allow a margin of 10s to accommodate the simultaneous creation inside the container
         path = "assets/" + self.application.model.envName + "_visArray.npy"
         envPath = "assets/" + self.application.model.envName + ".json"
-        if os.path.isfile(path) and os.path.getmtime(path) > os.path.getmtime(envPath):
+        if os.path.isfile(path) and os.path.getmtime(path) > os.path.getmtime(envPath) + 10:
             log("Loading visibility array from file (" + path + ")")
             arr = np.load(path)
         # Otherwise, recompute visibility and create file
@@ -352,31 +353,31 @@ class MySocketHandler(SocketHandler):
 class MyModularServer(ModularServer):
 
     # Replace the default page and socket handlers with the extended classes
-    page_handler = (r"/evac-sim/", MyPageHandler)
-    socket_handler = (r"/evac-sim/ws", MySocketHandler)
+    page_handler = (r"/", MyPageHandler)
+    socket_handler = (r"/ws", MySocketHandler)
 
     # Adjust static handler settings to plug a custom template
     static_handler = (
-        r"/evac-sim/static/(.*)",
+        r"/static/(.*)",
         tornado.web.StaticFileHandler,
         {"path": CURRENT_DIR + "/templates"},
     )
 
     # These two are to get rid of errors related to favicon.ico and robots.txt
     favicon_handler = (
-        r"/evac-sim/(favicon\.ico)",
+        r"/(favicon\.ico)",
         tornado.web.StaticFileHandler,
         {"path": CURRENT_DIR + "/templates"},
     )
 
     robots_handler = (
-        r"/evac-sim/(robots\.txt)",
+        r"/(robots\.txt)",
         tornado.web.StaticFileHandler,
         {"path": CURRENT_DIR + "/templates"},
     )
 
     # Re-define the local handler and the handler list to replace the default values
-    local_handler = (r"/evac-sim/local/(.*)", tornado.web.StaticFileHandler, {"path": CURRENT_DIR})
+    local_handler = (r"/local/(.*)", tornado.web.StaticFileHandler, {"path": CURRENT_DIR})
     handlers = [page_handler, socket_handler, static_handler,
                 local_handler, favicon_handler, robots_handler]
 

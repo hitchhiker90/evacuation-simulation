@@ -947,11 +947,11 @@ function ModelController(tick = 0, running = false, finished = false) {
  * Websocket opening and message handling
  */
 
-/** Open the websocket connection; support TLS-specific URLs when appropriate */
+/** Open the websocket connection under /evac-sim/ws; support TLS-specific URLs when appropriate */
 const ws = new WebSocket(
     (window.location.protocol === "https:" ? "wss://" : "ws://") +
     location.host +
-    "/ws"
+    "/evac-sim/ws"
 );
 
 /**
@@ -974,7 +974,7 @@ ws.onmessage = function (message) {
             img.addEventListener('load', function () {
                 ctx.drawImage(img, 0, 0);
             }, false);
-            img.src = '/local/assets/placeholder.png';
+            img.src = '/evac-sim/sets/placeholder.png';
             break;
         case "env_loading":
             console.log(msg);

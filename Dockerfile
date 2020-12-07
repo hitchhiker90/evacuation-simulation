@@ -9,8 +9,7 @@ COPY assets /srv/assets
 RUN pip3 install mesa
 
 # Set up a directory for logs
-RUN cd srv
-RUN mkdir logs
+RUN cd srv && mkdir logs
 
 # Start the application
 CMD cd /srv && python3 server.py
