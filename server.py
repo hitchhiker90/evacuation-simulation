@@ -48,11 +48,10 @@ class MySocketHandler(SocketHandler):
         # Determine array size
         w = self.application.model.grid.width
         h = self.application.model.grid.height
-        # Check if precomputed visibility file exists and check the date of the file against the environment file
-        # Allow a margin of 10s to accommodate the simultaneous creation inside the container
+        # Check if precomputed visibility file exists
         path = "assets/" + self.application.model.envName + "_visArray.npy"
         envPath = "assets/" + self.application.model.envName + ".json"
-        if os.path.isfile(path) and os.path.getmtime(path) > os.path.getmtime(envPath) + 10:
+        if os.path.isfile(path):
             log("Loading visibility array from file (" + path + ")")
             arr = np.load(path)
         # Otherwise, recompute visibility and create file
