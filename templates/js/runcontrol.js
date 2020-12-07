@@ -974,7 +974,7 @@ ws.onmessage = function (message) {
             img.addEventListener('load', function () {
                 ctx.drawImage(img, 0, 0);
             }, false);
-            img.src = '/evac-sim/sets/placeholder.png';
+            img.src = '/evac-sim/assets/placeholder.png';
             break;
         case "env_loading":
             console.log(msg);
