@@ -40,21 +40,9 @@ $ pip install mesa
 All other dependencies should be installed with Mesa, if not already present.
 
 
-## Starting the application
+## Live demo
 
-After unzipping the submission file, open the command-line interface and navigate to the folder containing the extracted files. The folder will have the file structure indicated below. To run the application, simply run the `server.py` file with the appropriate version of Python 3, e.g. with 
-
-``` shell
-$ python server.py
-```
-or
-``` shell
-$ python3 server.py
-```
-
-The browser should be automatically opened, if that does not happen, open the browser and enter the URL displayed in the console - typically it will be 'http://127.0.0.1:8521', but consecutive port numbers will be tried and used if the default is not available.
-
-Tested on Win10 and Ubuntu 20.04.
+The application is currently hosted [here](https://lukaszp.dev/evac-sim) and can be viewed and tested.
 
 
 ## Attribution
