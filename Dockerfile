@@ -6,7 +6,7 @@ COPY templates /srv/templates
 COPY assets /srv/assets
 
 # Update and install Mesa
-RUN pip3 install mesa
+RUN pip3 install mesa==0.8.7
 
 # Set up a directory for logs
 RUN cd srv && mkdir logs

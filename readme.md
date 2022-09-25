@@ -4,11 +4,13 @@
 
 ## Contents
 
-- [Summary](#Summary)
-- [Features](#Features)
-- [Requirements](#Requirements)
-- [Starting the application](#Starting-the-application)
-- [Attribution](#Attribution)
+- [Evacuation Simulation](#evacuation-simulation)
+  - [Contents](#contents)
+  - [Summary](#summary)
+  - [Features](#features)
+  - [Requirements](#requirements)
+  - [Live demo](#live-demo)
+  - [Attribution](#attribution)
 
 
 ## Summary
@@ -34,7 +36,7 @@ The simulation is agent-based, with the behaviour of each agent defined independ
 To run the application, you need to have a distribution of Python (tested with Python 3.7 and 3.8), with the Mesa package installed (developed and tested with Mesa 0.8.7, which was the default version at the time), e.g. with 
 
 ``` shell
-$ pip install mesa
+$ pip install mesa==0.8.7
 ```
 
 All other dependencies should be installed with Mesa, if not already present.
@@ -42,7 +44,7 @@ All other dependencies should be installed with Mesa, if not already present.
 
 ## Live demo
 
-The application is currently hosted [here](https://lukaszp.dev/evac-sim) and can be viewed and tested.
+The application is currently hosted [here](https://evac-sim.lukaszp.dev) and can be viewed and tested.
 
 
 ## Attribution

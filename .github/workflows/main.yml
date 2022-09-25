@@ -1,0 +1,55 @@
+name: Evacuation Simulation - main
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build and publish application image
+        uses: elgohr/Publish-Docker-Github-Action@v4
+        with:
+          name: ${{ github.repository }}
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+          dockerfile: Dockerfile
+          tags: latest
+
+  deploy:
+    name: Deploy
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy application image to the server
+        uses: appleboy/ssh-action@master
+        env:
+            GITHUB_USERNAME: ${{ github.repository_owner }}
+            CR_PAT: ${{ secrets.CR_PAT }}
+        with:
+          host: ${{ secrets.REMOTE_HOST_URL }}
+          username: ${{ secrets.REMOTE_HOST_USERNAME }}
+          key: ${{ secrets.REMOTE_HOST_SSH_KEY }}
+          envs: GITHUB_USERNAME, CR_PAT
+          script: |
+            docker login -u $GITHUB_USERNAME -p $CR_PAT ghcr.io
+            docker image rm ghcr.io/${{ github.repository }}:latest
+            docker pull ghcr.io/${{ github.repository }}:latest
+            cd /srv/portfolio
+            docker-compose down
+            docker container remove portfolio_evac-sim
+            docker-compose up --no-build -d
+

@@ -7,7 +7,7 @@ Based on the default Mesa's modular template.
 <!DOCTYPE html>
 <head>
 	<title>COMP702 - Evacuation Simulation</title>
-    <link href="/evac-sim/static/css/simulation-visuals.css" type="text/css" rel="stylesheet" />
+    <link href="/static/css/simulation-visuals.css" type="text/css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans" rel="stylesheet" />
 </head>
 <body>
@@ -631,18 +631,18 @@ Based on the default Mesa's modular template.
     </div>
 
     <!-- Bottom-load all JavaScript dependencies -->
-    <script src="/evac-sim/static/js/jquery.js"></script>
+    <script src="/static/js/jquery.js"></script>
 
     <!-- Script includes go here (specified by the CanvasGrid python class) -->
 	{% for file_name in package_includes %}
-		<script src="/evac-sim/static/js/{{ file_name }}" type="text/javascript"></script>
+		<script src="/static/js/{{ file_name }}" type="text/javascript"></script>
 	{% end %}
 
     <!-- template-specific code snippets here -->
     <script>
         var port = {{ port }};
     </script>
-    <script src="/evac-sim/static/js/runcontrol.js"></script>
+    <script src="/static/js/runcontrol.js"></script>
 
     <!-- Element-specific scripts go here -->
     <script>
@@ -650,7 +650,7 @@ Based on the default Mesa's modular template.
 			{% raw script %}
 	    {% end %}
     </script>
-    <script src="/evac-sim/static/js/CanvasInteraction.js"></script>
+    <script src="/static/js/CanvasInteraction.js"></script>
 
     <!-- A script warning the user that refreshing the page will result in program reset
     <script>
