@@ -47,7 +47,6 @@ jobs:
           echo ${WG_PRIVATE_KEY} > private_key
           sudo ip link add dev wg0 type wireguard
           sudo ip -4 address add dev wg0 ${WG_IPS} peer ${WG_DNS}
-          echo ${WG_ALLOWED_IPS}
           sudo wg set wg0 listen-port 48123 private-key private_key peer ${WG_PUBLIC_KEY} allowed-ips ${WG_ALLOWED_IPS} endpoint ${WG_ENDPOINT}
           sudo ip link set up dev wg0
 
