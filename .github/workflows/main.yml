@@ -44,17 +44,12 @@ jobs:
           WG_DNS: '${{ secrets.WG_DNS }}'
         run: |
           sudo apt install wireguard
-          echo A
           echo ${WG_PRIVATE_KEY} > private_key
-          echo B
           sudo ip link add dev wg0 type wireguard
-          echo C
           sudo ip -4 address add dev wg0 ${WG_IPS} peer ${WG_DNS}
-          echo D
+          echo ${WG_ALLOWED_IPS}
           sudo wg set wg0 listen-port 48123 private-key private_key peer ${WG_PUBLIC_KEY} allowed-ips ${WG_ALLOWED_IPS} endpoint ${WG_ENDPOINT}
-          echo E
           sudo ip link set up dev wg0
-          echo F
 
       - name: Deploy application image to the server
         uses: appleboy/ssh-action@master
