@@ -35,14 +35,16 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set up WireGuard
-        uses: egor-tensin/setup-wireguard@v1
-        with:
-          endpoint: '${{ secrets.WG_ENDPOINT }}'
-          endpoint_public_key: '${{ secrets.WG_PUBLIC_KEY }}'
-          ips: '${{ secrets.WG_IPS }}'
-          allowed_ips: '${{ secrets.WG_ALLOWED_IPS }}'
-          private_key: '${{ secrets.WG_PRIVATE_KEY }}'
-          preshared_key: '${{ secrets.WG_PRESHARED_KEY }}'
+        run: |
+          sudo apt install wireguard
+          echo TEST ECHO
+        # with:
+          # endpoint: '${{ secrets.WG_ENDPOINT }}'
+          # endpoint_public_key: '${{ secrets.WG_PUBLIC_KEY }}'
+          # ips: '${{ secrets.WG_IPS }}'
+          # allowed_ips: '${{ secrets.WG_ALLOWED_IPS }}'
+          # private_key: '${{ secrets.WG_PRIVATE_KEY }}'
+          # preshared_key: '${{ secrets.WG_PRESHARED_KEY }}'
 
       - name: Deploy application image to the server
         uses: appleboy/ssh-action@master
