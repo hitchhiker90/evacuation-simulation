@@ -40,15 +40,21 @@ jobs:
           WG_PUBLIC_KEY: '${{ secrets.WG_PUBLIC_KEY }}'
           WG_IPS: '${{ secrets.WG_IPS }}'
           WG_ALLOWED_IPS: '${{ secrets.WG_ALLOWED_IPS }}'
+          WG_PRESHARED_KEY: '${{ secrets.WG_PRESHARED_KEY }}'
           WG_PRIVATE_KEY: '${{ secrets.WG_PRIVATE_KEY }}'
           WG_DNS: '${{ secrets.WG_DNS }}'
         run: |
           sudo apt install wireguard
           echo ${WG_PRIVATE_KEY} > private_key
+          echo ${WG_PRESHARED_KEY} > preshared_key
           sudo ip link add dev wg0 type wireguard
           sudo ip -4 address add dev wg0 ${WG_IPS} peer ${WG_DNS}
-          sudo wg set wg0 listen-port 48123 private-key private_key peer ${WG_PUBLIC_KEY} allowed-ips ${WG_ALLOWED_IPS} endpoint ${WG_ENDPOINT}
-          sudo ip link set up dev wg0
+          sudo wg set wg0 listen-port 48123 private-key private_key peer ${WG_PUBLIC_KEY} allowed-ips ${WG_ALLOWED_IPS} endpoint ${WG_ENDPOINT} preshared-key preshared_key
+          sudo ip link set mtu 1420 up dev wg0
+          sudo wg set wg0 fwmark 51820
+          sudo ip -4 rule add not fwmark 51820 table 51820
+          sudo ip -4 rule add table main suppress_prefixlength 0
+          sudo ip -4 route add 192.168.0.0/16 dev wg0 table 51820
 
       - name: Deploy application image to the server
         uses: appleboy/ssh-action@master
