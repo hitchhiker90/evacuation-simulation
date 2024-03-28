@@ -71,7 +71,7 @@ jobs:
             docker image rm ghcr.io/${{ github.repository }}:latest
             docker pull ghcr.io/${{ github.repository }}:latest
             cd /srv/portfolio
-            docker-compose down
+            docker compose down
             docker container remove portfolio_evac-sim
-            docker-compose up --no-build -d
+            docker compose up --no-build -d
 
