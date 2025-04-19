@@ -26,20 +26,18 @@ The back end (simulation environment and agent logic) was implemented using Pyth
 
 The application allows the user to select an environment in the form of a building plan with specified rooms, corridors, exits and signs pointing to the exits, as well as obstacles, place a number of agents of different types within the environment (by specifying population parameters as well as individually) and simulate the evacuation process. The application also supports explicit simulation of fire and smoke that have effect on the evacuating agents.
 
-<p align='center'><img src='assets/Screenshot_2.png'></p>
+<p><img src='assets/Screenshot_2.png' alt="screenshot"></p>
 
 The simulation is agent-based, with the behaviour of each agent defined independently, based on their type, parameters, state, preferred strategy and what they can perceive in the environment. The agents can belong to different age groups (children, adults, elderly) and different levels of mobility (people with lower fitness and with reduced mobility). Different groups are characterised by different walking speeds and, in the case of children, entirely different behaviour logic.
 
 
 ## Requirements
 
-To run the application, you need to have a distribution of Python (tested with Python 3.7 and 3.8), with the Mesa package installed (developed and tested with Mesa 0.8.7, which was the default version at the time), e.g. with 
+To run the application, you need to have a distribution of Python (tested with Python 3.7, 3.8 and 3.12) and run 
 
 ``` shell
-$ pip install mesa==0.8.7
+$ pip install -r requirements.txt
 ```
-
-All other dependencies should be installed with Mesa, if not already present.
 
 
 ## Live demo

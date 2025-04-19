@@ -3,3 +3,4 @@ __pycache__/
 
 # Logs created during runtime
 logs/*
+venv/
